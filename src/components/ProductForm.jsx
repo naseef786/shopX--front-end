@@ -5,56 +5,62 @@ import axios from '../config/axios';
 import { Store } from '../store/Store';
 
 const ProductForm = () => {
-  const {state,dispatch} = useContext(Store)
-  const {subCategories} = state;
-  const [categories, setCategories] = useState([]);
-  const [cat,setCat] = useState('')
-  
+  const { state, dispatch } = useContext(Store)
+  const { subCategories, categories } = state;
+
   const [formData, setFormData] = useState({
     name: '',
     description: '',
     price: '',
     category: '',
     subcategoryId: '',
-    endCategory:''
+    endCategory: ''
   });
 
 
   useEffect(() => {
     axios.get('api/categories')
       .then(response => {
-        setCategories(response.data.categories);
-        dispatch({ type: 'STORE_SUBCATEGORIES', payload:response.data.subcategories })
+        dispatch({ type: 'STORE_SUBCATEGORIES', payload: response.data.subcategories })
+        dispatch({ type: 'STORE_CATEGORIES', payload: response.data.categories })
+        
       })
       .catch(error => console.error('Error:', error));
   },[])
-console.log(subCategories);
-
-const filteredSubcategories = subCategories
-  .filter((subcategory) => subcategory.parentCategory === cat);
-console.log(formData.subcategoryId);
-  const endCategory =  subCategories
-  .filter((subcategory) => subcategory.parentCategory ===formData.subcategoryId);
-
-// Render the filtered subcategories as options in your subcategory select input
 
 
+  const filteredSubcategories = (categories, subCategories, selectedCategory) => {
+    const selectedCategoryObject = categories.find(C => C.name === selectedCategory);
+
+    if (selectedCategoryObject) {
+      return subCategories.filter(subcategory => subcategory.parentCategory === selectedCategoryObject._id);
+    }
+    return [];
+  };
+
+  const filteredEndcategories = (subCategories, selectedCategory) => {
+    const selectedCategoryObject = subCategories.find(C => C.name === selectedCategory);
+
+    if (selectedCategoryObject) {
+      return subCategories.filter(subcategory => subcategory.parentCategory === selectedCategoryObject._id);
+    }
+    return [];
+  };
   const handleChange = (e) => {
     const { name, value } = e.target;
+   
     setFormData({
       ...formData,
       [name]: value
     });
+
   };
-  const handleCategoryChange = (e) => {
-    const categoryId = e.target.value;
-    setCat(categoryId)
-   
-    setFormData({
-      ...formData,
-      category: categoryId, 
-    });
-  };
+
+
+
+  const filteredSubs = filteredSubcategories(categories, subCategories, formData.category);
+  const filteredEnds = filteredEndcategories(subCategories, formData.subcategoryId);
+  console.log(filteredSubs);
   const handleSubmit = (e) => {
     e.preventDefault();
 
@@ -72,8 +78,8 @@ console.log(formData.subcategoryId);
         console.error('Error creating product:', error);
       });
   };
-console.log(formData);
- 
+  console.log(formData);
+
 
   return (
     <form onSubmit={handleSubmit}>
@@ -92,14 +98,14 @@ console.log(formData);
           id="category"
           name="category"
           className="form-control"
-  
-          value={formData.category}
-          onChange={handleCategoryChange}
+          defaultValue={formData.category}
+          onChange={handleChange}
           required
-        >
+        > <option>select</option>
+
           {/* Render the options dynamically based on your data */}
           {categories.map((item) => (
-            <option key={item._id}>{item._id}</option>
+            <option key={item._id} defaultValue={item.name}>{item.name}</option>
           ))}
         </select>
       </div>
@@ -112,47 +118,44 @@ console.log(formData);
         />
       </div>
 
-      {cat && (
+      {formData.category && (
         <div>
           <label>Subcategory:</label>
           <select
             value={formData.subcategoryId}
             type="text"
-          name="subcategoryId"
-          onChange={handleChange}
+            name="subcategoryId"
+            onChange={handleChange}
           >
-            <option value={formData.subcategoryId}>Select Subcategory</option>
-            {filteredSubcategories && filteredSubcategories.length > 0 && filteredSubcategories.map(subcategory => (
-    <option key={subcategory._id} value={subcategory._id}>
-      {subcategory.name}
-    </option>
-  ))}
-
-
+            <option>select</option>
+            {filteredSubs && filteredSubs.length > 0 && filteredSubs.map(subcategory => (
+              <option key={subcategory._id} defaultValue={subcategory.name}>
+                {subcategory.name}
+              </option>
+            ))}
           </select>
         </div>
       )}
-        {formData.subcategoryId && (
+      {formData.subcategoryId && (
         <div>
           <label>Subcategory:</label>
           <select
             value={formData.endCategory}
             type="text"
-          name="endCategory"
-          onChange={handleChange}
+            name="endCategory"
+            onChange={handleChange}
           >
-            <option value={formData.endCategory}>Select Subcategory</option>
-            {endCategory && endCategory.length > 0 && endCategory.map(subcategory => (
-    <option key={subcategory._id} value={subcategory._id}>
-      {subcategory.name}
-    </option>
-  ))}
+            <option>select</option>
+            {filteredEnds && filteredEnds.length > 0 && filteredEnds.map(subcategory => (
+              <option key={subcategory._id} value={subcategory.name}>
+                {subcategory.name}
+              </option>
+            ))}
 
 
           </select>
         </div>
       )}
-
       <div>
         <label>Price:</label>
         <input
@@ -162,7 +165,6 @@ console.log(formData);
           onChange={handleChange}
         />
       </div>
-      
       <button type="submit">Add Product</button>
     </form>
   );
