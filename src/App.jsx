@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom'; // Note the addition of Routes
 
-import CategoryList from './components/CategoryForm';
+
 import CategoryForm from './components/CategoryForm';
 import ProductForm from './components/ProductForm';
 import ProductList from './components/ProductList';
