@@ -78,22 +78,25 @@ const ProductForm = () => {
         console.error('Error creating product:', error);
       });
   };
+
+  
   console.log(formData);
 
 
   return (
-    <form onSubmit={handleSubmit}>
-      <div>
-        <label>Product Name:</label>
+    <form onSubmit={handleSubmit} className="max-w-xl bg-slate-500 mx-auto p-4 shadow-lg rounded-lg mt-10 ">
+      <div className="mb-4">
+        <label className="block text-gray-700 text-sm font-bold mb-2">Product Name:</label>
         <input
+         className="border rounded-lg py-2 px-3 w-full"
           type="text"
           name="name"
           value={formData.name}
           onChange={handleChange}
         />
       </div>
-      <div className="form-group col-md-6">
-        <label>Category Name *</label>
+      <div className="mb-4">
+        <label className="block text-gray-700 text-sm font-bold mb-2">Category Name *</label>
         <select
           id="category"
           name="category"
@@ -101,6 +104,7 @@ const ProductForm = () => {
           defaultValue={formData.category}
           onChange={handleChange}
           required
+          
         > <option>select</option>
 
           {/* Render the options dynamically based on your data */}
@@ -109,18 +113,19 @@ const ProductForm = () => {
           ))}
         </select>
       </div>
-      <div>
-        <label>Description:</label>
+      <div className='mb-4'>
+        <label className="block text-gray-700 text-sm font-bold mb-2">Description:</label>
         <textarea
           name="description"
+          className="border rounded-lg py-2 px-3 w-full"
           value={formData.description}
           onChange={handleChange}
         />
       </div>
 
       {formData.category && (
-        <div>
-          <label>Subcategory:</label>
+        <div className="mb-4">
+          <label className="block text-gray-700 text-sm font-bold mb-2">Subcategory:</label>
           <select
             value={formData.subcategoryId}
             type="text"
@@ -137,8 +142,8 @@ const ProductForm = () => {
         </div>
       )}
       {formData.subcategoryId && (
-        <div>
-          <label>Subcategory:</label>
+        <div className="mb-4">
+          <label className="block text-gray-700 text-sm font-bold mb-2">Subcategory:</label>
           <select
             value={formData.endCategory}
             type="text"
@@ -156,10 +161,11 @@ const ProductForm = () => {
           </select>
         </div>
       )}
-      <div>
-        <label>Price:</label>
+      <div className="mb-4">
+        <label className="block text-gray-700 text-sm font-bold mb-2">Price:</label>
         <input
           type="text"
+          className="border rounded-lg py-2 px-3 w-full"
           name="price"
           value={formData.price}
           onChange={handleChange}

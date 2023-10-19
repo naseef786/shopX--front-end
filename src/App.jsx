@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom'; // Note the addition of Routes
 
 import CategoryList from './components/CategoryForm';
-import CategoryForm from './components/CategoryList';
+import CategoryForm from './components/CategoryForm';
 import ProductForm from './components/ProductForm';
 import ProductList from './components/ProductList';
 
@@ -39,21 +39,26 @@ const App = () => {
 
   return (
     <Router>
-      <div>
-        <h1>E-Commerce App</h1>
-        <nav>
-          <Link to="/view-category">View----Category---  </Link>
-          <Link to="/create-product">---Create---Product---  </Link>
-          <Link to="/create-Category">---Create---Category---  </Link>
-          <Link to="/">---View Products</Link>
+       <div className="min-h-screen bg-white  flex flex-col">
+       <header className="  bg-gray-800 p-4 text-white">
+        <h1 className='text-2xl mb-4'>E-Commerce App</h1>
+        <nav className="container  bg-zinc-900 mx-auto">
+          <Link to="/create-product" className='mr-4'>Create Product</Link>
+          <Link to="/create-Category" className='mr-4'>Create Category</Link>
+          <Link to="/" className='mr-4'>View Products  </Link>
         </nav>
-        
+        </header>
+        <div className="flex-1 container mx-auto">
         <Routes>
-          <Route path="/view-category" element={<CategoryList />} />
+          
           <Route path="/create-product" element={<ProductForm />} />
           <Route path="/create-Category" element={<CategoryForm/>} />
           <Route path="/"  element={<ProductList  />} />
         </Routes>
+        </div>
+        <footer className="bg-gray-800 text-white p-4 text-center">
+          &copy; 2023 Your Company
+        </footer>
       </div>
     </Router>
   );
